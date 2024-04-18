@@ -6,19 +6,18 @@ class LoginPage extends Component {
     return (
       <div className="login">
        <div className="image-container">
-      <img src={logo1} alt="Index InfoTech" className="left-aligned-image" style={{ display: 'block', margin: '20px auto 0'}}
+      <img src={logo1} alt="Index InfoTech" className="left-aligned-image"
 
       />
         </div>
         <form>
-        <div className="text_area">
-            <input
+        <div className="text_area" >
+            <input 
               type="text"
               id="Company"
               name="Company"
               placeholder='Company' style={{ margin:'20px'}}
-              className="text_input"
-              
+              className="text_input"  
             />
           </div>
           <div className="text_area">
@@ -36,8 +35,7 @@ class LoginPage extends Component {
               id="password"
               name="password"
               placeholder='Password' style={{ margin:'20px'}}
-             
-              className="text_input"
+             className="text_input"
             />
           </div>
           <input
