@@ -1,0 +1,105 @@
+.ctrl-btns {
+  display: flex;
+  justify-content: flex-end;
+  margin: 12px;
+}
+
+.ctrl-btns button {
+  margin: 5px;
+}
+
+/* MyTable.css */
+
+.table-bordered {
+  border: 1px solid #000000; /* Change border color and width */
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #000000; /* Change border color and width for table headers and cells */
+}
+.table-primary{
+  text-align: center;
+  
+}
+.rebartable {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 1.25rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  background-color: #eef2f5;
+  width: 96%;
+  left: 2%;
+ 
+}
+
+.card-header {
+  padding: 0.75rem 1.25rem;
+  margin: 5px;
+  background-color: #d7e7ea;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
+  color: rgb(22, 19, 19);
+  display: flex;
+  resize: horizontal; /* Allow Horizontal resizing */
+  overflow: auto;
+  
+}
+
+.card-body {
+  padding: 1.25rem;
+  background-color: #d7e7ea;
+  margin: 5px;
+  width: 99.5%;
+}
+
+.table {
+  display: inlinetable;
+  width: 100%;
+}
+
+/* MyTable.css */
+
+.custom-table-head {
+  background-color: #4caf50 !important; /* Change this to your preferred color */
+  color: white !important; /* Change this to your preferred color */
+  
+  
+}
+
+.panel-title {
+  display: flex;
+  width: 80%;
+  margin: 4%;
+}
+
+.Element-id-container {
+  width: 40%;
+  padding-top: 56px;
+  padding-right:300px;
+}
+.Elementidinput {
+  position: relative;
+  width: 30%;
+  height: 40px;
+  border: 1px solid #1c1b1b;
+  border-radius: 5px;
+  margin: 15px;
+  top: -3%;
+}
+.Elementidinput:focus {
+  border-color: #007bff; /* Blue border color */
+  outline: none; /* Remove default outline */
+}
+.toggle-table-icon {
+  background-color: transparent;
+  border: none;
+  outline: none; /* Remove default button outline */
+  color: inherit; /* Inherit text color from parent element */
+  cursor: pointer; /* Indicate clickable area */
+  position: relative;
+  bottom: 5px;
+}
+.table thead th {
+  text-align: center;
+  vertical-align: middle;
+}

@@ -1,0 +1,86 @@
+.main-search-bar {
+    max-width: 0;
+    overflow: hidden;
+    transition: max-width 0.6s ease-out;
+    position: fixed;
+    top: 0;
+    right: 0;
+  }
+  
+  .main-search-bar.open {
+    max-width: 100%;
+    max-height: 100%;
+    transition: max-width 0.4s ease-in;
+  }
+  
+  .search-icon {
+    /* background-color: #138496;  Blue background color 
+    color: white; White text color */
+    border: none; /* Remove border */
+    padding: 5px 10px; /* Padding */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor style */
+    transition: background-color 0.3s; /* Smooth background color transition */
+    margin: 3px;
+    background-color: transparent;
+    outline: none; /* Remove default button outline */
+    color: inherit; /* Inherit text color from parent element */
+    cursor: pointer; /* Indicate clickable area */
+  }
+  
+  /* .search-icon:hover {
+    background-color: #0056b3; /* Darker blue background color on hover 
+  } */
+  
+  .search-title {
+    font-family: Sans-serif;
+  }
+  .search-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #eef2f5;
+  }
+  
+  .search-filter input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .search-filter input:focus {
+    border-color: #007bff; /* Blue border color */
+    outline: none; /* Remove default outline */
+  }
+  
+  .search-filter .wbs-combo {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  select option:disabled {
+    color: #999; /* Light grey color */
+    text-shadow: #007bff;
+  }
+  
+  .search-filter button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .search-filter button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .search-filter button[type="reset"] {
+    background-color: #dc3545;
+    color: white;
+  }

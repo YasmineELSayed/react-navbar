@@ -1,11 +1,13 @@
-import logo from './logo.svg';
+
 import React from 'react';
-import LoginPage from './Component/LoginPage'
+import PanelCard from './BatchingPlantControl/PanelCard'
+// import LoginPage from './Component/LoginPage'
 
 function App() {
   return (
     <div>
-        <LoginPage/>
+        {/* <LoginPage/> */}
+        <PanelCard/>
     </div>
 
   );
