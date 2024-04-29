@@ -22,53 +22,44 @@ function MyTable() {
     const password = 'manager';
     const basicAuth = 'Basic ' + btoa(username + ':' + password);
  
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(apilink, {
-                    headers: {
-                        Authorization: basicAuth,
-                    }
-                });
- 
-                if (response.status !== 200) {
-                    throw new Error('Failed to fetch data');
+    const fetchData = async () => {
+        const username = 'manager'; // Replace with your username
+        const password = 'manager'; // Replace with your password
+        const apiUrl = 'https://77.92.189.102/IITPrecastVertical/api/v1/BaqSvc/IIT_RebarElements_PCopy(PRECAST)'; // Adjust the URL as needed
+
+        try {
+            const response = await fetch(apilink, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + btoa(username + ":" + password)
                 }
-                const responseData = response.data.value; // Extract data from response
-                setData(responseData);
-                setLoading(false);
-            } catch (error) {
-                setError(error);
-                setLoading(false);
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        };
+            const data = await response.json();
+            // Check if data is an object and contains the 'value' property which is an array
+            if (typeof data === 'object' && data !== null && Array.isArray(data.value)) {
+                setData(data.value);
+            } else {
+                console.error('API response does not contain the expected array in the "value" property:', data);
+            }
+        } catch (error) {
+            console.error('There was a problem with your fetch operation:', error);
+        }
+    };
+    useEffect(() => {
         fetchData();
-    }, [apilink, basicAuth]);
- 
-    const toggleSearch = () => {
-        setSearchOpen(!searchOpen);
-    }
- 
-    const toggleTableVisibility = () => {
-        setTableVisible(!tableVisible);
-    }
- 
+    }, []); // Fetch data on component mount
+
     const renderTableRows = () => {
-        if (!Array.isArray(data) || data.length === 0) {
-            const startIndex = (currentPage - 1) * itemsPerPage;
+        const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         const currentItems = data.slice(startIndex, endIndex);
 
-    
-           
-            return (
-<tr>
-<td colSpan="12">No data available</td>
-</tr>
-            );
-        }
-        return data.map((item, index) => (
+        return currentItems.map((item, index) => (
+       
 <tr key={index}>
 <td>{item.JobMtl_JobNum}</td>
 <td>{item.JobHead_PartNum}</td>
@@ -99,7 +90,15 @@ function MyTable() {
         }
     };
 
+  // Search Toggle
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+}
 
+// Toggle table visibility
+const toggleTableVisibility = () => {
+    setTableVisible(!tableVisible);
+}
   
     return (
 <div className='card rebartable'>
@@ -222,7 +221,7 @@ function MyTable() {
             <th>Job Number</th>
           <th>Part Number</th>
           <th>Lot Number</th>
-         <th>Element Number</th>
+         <th>Part Lot Project</th>
         <th>Part Description</th>
        <th>Production Quantity</th>
       <th>Quantity Per</th>
