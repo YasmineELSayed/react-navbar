@@ -1,174 +1,131 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faSave, faSearch, faEye, faEyeSlash, faArrowUp, faArrowDown, faDownload, faFilter, faListDots, faHandDots, faEllipsis, faEllipsisVertical, faRefresh } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faSave, faSearch, faEye, faEyeSlash, faArrowLeft, faArrowRight, faArrowUp, faArrowDown, faDownload, faFilter, faListDots, faHandDots, faEllipsis, faEllipsisVertical, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip } from 'react-tooltip';
-import './PanelCard.css'
+import './PanelCard.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../Sharing/SearchBar.css'
-
+import '../Sharing/SearchBar.css';
+ 
 function MyTable() {
-
-    // Search-bar
-  
     const [searchOpen, setSearchOpen] = useState(false);
-    // Table visibility
     const [tableVisible, setTableVisible] = useState(true);
-    // API
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
-
-        const [data, setData] = useState([]);
-        const[item,setItem]=useState([])
-       
-        const [error, setError] = useState(null);
-        const[loading,setLoading]= useState(null);
-
-        const axiosInstance = axios.create({
-            timeout: 5000,
-            headers: {
-              'X-Content-Type-Options': 'nosniff', // Add default X-Content-Type-Options header
-            },
-          });
-
-
-        const apilink = 'https://77.92.189.102/iit_vertical_precast/api/v1/BaqSvc/IIT_BatchingPlanner';
-
-        const Username = 'manager';
-        const Password= 'manager';
-        const basicAuth = 'Basic ' + btoa(Username + ':' + Password);
-        
-
-      
-        useEffect(() => {
-          const fetchData = async () => {
+ 
+    const apilink = 'https://77.92.189.102/iit_vertical_precast/api/v1/BaqSvc/IIT_BatchingPlanner';
+    const username = 'manager';
+    const password = 'manager';
+    const basicAuth = 'Basic ' + btoa(username + ':' + password);
+ 
+    useEffect(() => {
+        const fetchData = async () => {
             try {
-                setLoading(false);
-
-                const response = await axiosInstance.get(apilink, {
-                  
+                setLoading(true);
+                const response = await axios.get(apilink, {
                     headers: {
-                      Authorization: basicAuth,
+                        Authorization: basicAuth,
                     }
                 });
-
-        
-              if (!response.ok) {
-                console.log(response.status);
-                console.log(response.data.value);
-                throw new Error('Failed to fetch data');
-              }
-              const jsonData = await response.json();
-              setData(jsonData);
-          
-              
+ 
+                if (response.status !== 200) {
+                    throw new Error('Failed to fetch data');
+                }
+                const responseData = response.data.value; // Extract data from response
+                setData(responseData);
+                setLoading(false);
             } catch (error) {
-              setError(error);
-              setLoading(false);
+                setError(error);
+                setLoading(false);
             }
-          };
-      
-          fetchData();
-        }, [apilink, basicAuth]);
-      
-       
-
-
-
-
-
-
-
-
-
-    // Search Toggle
+        };
+        fetchData();
+    }, [apilink, basicAuth]);
+ 
     const toggleSearch = () => {
         setSearchOpen(!searchOpen);
     }
-
-    // Toggle table visibility
+ 
     const toggleTableVisibility = () => {
         setTableVisible(!tableVisible);
     }
+ 
+    const renderTableRows = () => {
+        if (!Array.isArray(data) || data.length === 0) {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const currentItems = data.slice(startIndex, endIndex);
 
-
-
-// Define the function outside of the JSX
-const renderTableRows = () => {
-    // Safely check if data is an array before mapping
-       if (!Array.isArray(data) || data.length === 0) {
-        return (
+    
+           
+            return (
 <tr>
-<td colSpan="12">No data available</td> {/* Display message if no data */}
+<td colSpan="12">No data available</td>
 </tr>
-        );
-    } {
-        return null; // Or some fallback UI
-        
-    }
-   
-    return data.map((item, index) => (
-        
-        <tr key={index}>
-            <td>{item.JobMtl_JobNum}</td>
-            <td>{item.JobHead_PartNum}</td>
-            <td>{item.PartLot_LotNum}</td>
-            <td>{item.ElementNumber}r</td>
-            <td>{item.Part_PartNum}</td>
-            <td>{item.JobHead_ProdQty}</td>
-            <td>{item.JobMtl_QtyPer}</td>
-            <td>{item.JobHead_IUM}</td>
-            <td>{item.JobMtl_RequiredQty}</td>
-            <td>{item.JobMtl_MtlSeq} </td>
-            <td>{item.JobHead_JobReleased}</td>
-            <td>{item.JobHead_BatchingPlant_c}</td>
-        </tr>
-    ));
-};
+            );
+        }
+        return data.map((item, index) => (
+<tr key={index}>
+<td>{item.JobMtl_JobNum}</td>
+<td>{item.JobHead_PartNum}</td>
+<td>{item.PartLot_LotNum}</td>
+<td>{item.ElementNumber}</td>
+<td>{item.Part_PartNum}</td>
+<td>{item.JobHead_ProdQty}</td>
+<td>{item.JobMtl_QtyPer}</td>
+<td>{item.JobHead_IUM}</td>
+<td>{item.JobMtl_RequiredQty}</td>
+<td>{item.JobMtl_MtlSeq}</td>
+<td>{item.JobHead_JobReleased}</td>
+<td>{item.JobHead_BatchingPlant_c}</td>
+</tr>
+        ));
+    };
+ 
+    const goToNextPage = () => {
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
 
-
-
-
+  
     return (
-        <div className='card rebartable'>
-            <div className="card-header">
-                
-                <button type="button" className="toggle-table-icon" onClick={toggleTableVisibility}>
-                    <FontAwesomeIcon icon={tableVisible ? faArrowDown : faArrowUp} />
-                </button>
-                
-                {/* <Tooltip
-                    anchorSelect=".toggle-table-icon"
-                    content={tableVisible ? "Hide Table" : "Show Table"}
-                    place='bottom'
-                /> */}
-                <h2 className='panel-title'>Batching Plant Control</h2>
-                <div className='Element-id-container'>
-            
-               <select
-                 className="Options"
-                  type="text"
-                  name="optionlist"
-                 onChange={(e) => console.log(e.target.value)}
-                            >
+<div className='card rebartable'>
+<div className="card-header">
+<button type="button" className="toggle-table-icon" onClick={toggleTableVisibility}>
+<FontAwesomeIcon icon={tableVisible ? faArrowDown : faArrowUp} />
+</button>
+<h2 className='panel-title'>Batching Plant Control</h2>
+<div className='Element-id-container'>
+<select
+                        className="Options"
+                        type="text"
+                        name="optionlist"
+                        onChange={(e) => console.log(e.target.value)}
+>
                  <option value="" selected disabled></option>
-                   <option>Option1</option>
-                   <option>Option2</option>
-                   <option>option3</option>
-                   <option>option4</option>
-                   <option>option5</option>
-                           
-                 </select>
-
-                </div>
-
-                <div className='ctrl-btns'>
-
-                    
-                    {/* Existing buttons */}
-                    
-
+                <option>Option1</option>
+                <option>Option2</option>
+               <option>option3</option>
+               <option>option4</option>
+                <option>option5</option>
+          </select>
+        </div>
+<div className='ctrl-btns'>
+                    {/* Add buttons for various actions here */}
+      
                     <button className="btn" id='Filter'>
                    <FontAwesomeIcon icon={faFilter} />
                     </button>
@@ -254,52 +211,46 @@ const renderTableRows = () => {
                         </form>
                     </div>
                 </div>
-            </div>
-            {/* Conditionally render the table */}
-            {tableVisible && (
-                <div className="card-body">
-                    <div class="table-responsive-md">
-    
-                        <table className="table table-bordered">
-                            {/* Table content */}
-                            <thead className='table-primary'>
-                                <tr className='bg-primary text-white'>
-                                    <th>Job Number </th>
-                                    <th>Planned Casting Date</th>
-                                    <th>Element Number</th>
-                                    <th>Part Number</th>
-                                    <th>Prod Qty</th>
-                                    <th>UOM</th>
-                                    <th> Batched Qty</th>
-                                    <th>Mtl UOM</th>
-                                    <th>Concrete Mix</th>
-                                    <th>Mtl</th>
-                                    <th>Released</th>
-                                    <th>Selected</th>
-                                 
-                                </tr>
-                            </thead>
-                            <tbody>
-                       
-                            {renderTableRows()}
-                      
-                               
-                            </tbody>
-                       
-                        </table>
-                    
-                        
-                    </div>
-                        
-                </div>
-            )}
-        
-        
-        
-        </div>
-        
-    );
-  
-}
+            </div>              
 
-export default MyTable
+            {tableVisible && (
+             <div className="card-body">
+            <div className="table-responsive">
+           <table className="table table-bordered">
+           <thead className='table-primary'>
+           <tr className='bg-primary text-white'>
+            <th>Job Number</th>
+          <th>Part Number</th>
+          <th>Lot Number</th>
+         <th>Element Number</th>
+        <th>Part Description</th>
+       <th>Production Quantity</th>
+      <th>Quantity Per</th>
+      <th>Item Unit of Measure</th>
+    <th>Required Quantity</th>
+    <th>Material Sequence</th>
+   <th>Job Released</th>
+  <th>Batching Plant</th>
+  </tr>
+</thead>
+<tbody>
+  {renderTableRows()}
+</tbody>
+</table>
+</div>
+<div className="pagination">
+                        <button onClick={goToPreviousPage} disabled={currentPage === 1}>
+                            <FontAwesomeIcon icon={faArrowLeft} />
+                        </button>
+                        <button onClick={goToNextPage} disabled={currentPage === Math.ceil(data.length / itemsPerPage)}>
+                            <FontAwesomeIcon icon={faArrowRight} />
+                        </button>
+                        </div>
+</div>
+    
+    )}
+</div>
+    );
+}
+ 
+export default MyTable;
