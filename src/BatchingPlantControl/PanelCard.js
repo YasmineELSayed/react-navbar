@@ -1,17 +1,85 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faSave, faSearch, faEye, faEyeSlash, faArrowUp, faArrowDown, faDownload, faFilter, faListDots, faHandDots, faEllipsis, faEllipsisVertical, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip } from 'react-tooltip';
 import './PanelCard.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
- import '../Sharing/SearchBar.css'
-
+import '../Sharing/SearchBar.css'
 
 function MyTable() {
+
     // Search-bar
+  
     const [searchOpen, setSearchOpen] = useState(false);
     // Table visibility
     const [tableVisible, setTableVisible] = useState(true);
+    // API
+
+
+        const [data, setData] = useState([]);
+        const[item,setItem]=useState([])
+       
+        const [error, setError] = useState(null);
+        const[loading,setLoading]= useState(null);
+
+        const axiosInstance = axios.create({
+            timeout: 5000,
+            headers: {
+              'X-Content-Type-Options': 'nosniff', // Add default X-Content-Type-Options header
+            },
+          });
+
+
+        const apilink = 'https://77.92.189.102/iit_vertical_precast/api/v1/BaqSvc/IIT_BatchingPlanner';
+
+        const Username = 'manager';
+        const Password= 'manager';
+        const basicAuth = 'Basic ' + btoa(Username + ':' + Password);
+        
+
+      
+        useEffect(() => {
+          const fetchData = async () => {
+            try {
+                setLoading(false);
+
+                const response = await axiosInstance.get(apilink, {
+                  
+                    headers: {
+                      Authorization: basicAuth,
+                    }
+                });
+
+        
+              if (!response.ok) {
+                console.log(response.status);
+                console.log(response.data.value);
+                throw new Error('Failed to fetch data');
+              }
+              const jsonData = await response.json();
+              setData(jsonData);
+          
+              
+            } catch (error) {
+              setError(error);
+              setLoading(false);
+            }
+          };
+      
+          fetchData();
+        }, [apilink, basicAuth]);
+      
+       
+
+
+
+
+
+
+
+
 
     // Search Toggle
     const toggleSearch = () => {
@@ -23,9 +91,49 @@ function MyTable() {
         setTableVisible(!tableVisible);
     }
 
+
+
+// Define the function outside of the JSX
+const renderTableRows = () => {
+    // Safely check if data is an array before mapping
+       if (!Array.isArray(data) || data.length === 0) {
+        return (
+<tr>
+<td colSpan="12">No data available</td> {/* Display message if no data */}
+</tr>
+        );
+    } {
+        return null; // Or some fallback UI
+        
+    }
+   
+    return data.map((item, index) => (
+        
+        <tr key={index}>
+            <td>{item.JobMtl_JobNum}</td>
+            <td>{item.JobHead_PartNum}</td>
+            <td>{item.PartLot_LotNum}</td>
+            <td>{item.ElementNumber}r</td>
+            <td>{item.Part_PartNum}</td>
+            <td>{item.JobHead_ProdQty}</td>
+            <td>{item.JobMtl_QtyPer}</td>
+            <td>{item.JobHead_IUM}</td>
+            <td>{item.JobMtl_RequiredQty}</td>
+            <td>{item.JobMtl_MtlSeq} </td>
+            <td>{item.JobHead_JobReleased}</td>
+            <td>{item.JobHead_BatchingPlant_c}</td>
+        </tr>
+    ));
+};
+
+
+
+
+
     return (
         <div className='card rebartable'>
             <div className="card-header">
+                
                 <button type="button" className="toggle-table-icon" onClick={toggleTableVisibility}>
                     <FontAwesomeIcon icon={tableVisible ? faArrowDown : faArrowUp} />
                 </button>
@@ -151,6 +259,7 @@ function MyTable() {
             {tableVisible && (
                 <div className="card-body">
                     <div class="table-responsive-md">
+    
                         <table className="table table-bordered">
                             {/* Table content */}
                             <thead className='table-primary'>
@@ -167,46 +276,30 @@ function MyTable() {
                                     <th>Mtl</th>
                                     <th>Released</th>
                                     <th>Selected</th>
+                                 
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>BE10/50010002</td>
-                                    <td>10/21/2023</td>
-                                     <td>BE10/50010002</td>
-                                    <td>BE</td>
-                                    <td>2.4100</td>
-                                    <td>CUM</td>
-                                    <td>2.4100</td>
-                                    <td>CUM</td>
-                                    <td>Box Grider</td>
-                                    <td>10</td>
-                                    <td>False</td>
-                                    <td>True</td>
-                                    
-                                </tr>
-                                <tr>
-                                    
-                                    <td>BE10/50010005</td>
-                                    <td>10/21/2023</td>
-                                    <td>BE10/50010005</td>
-                                    <td>BE</td>
-                                    <td>2.1400</td>
-                                    <td>CUM</td>
-                                    <td>1.0000</td>
-                                    <td>CUM</td>
-                                    <td>Unapproved Concrete</td>
-                                    <td>10</td>
-                                    <td>false</td>
-                                    <td>false</td>
-                                </tr>
+                       
+                            {renderTableRows()}
+                      
+                               
                             </tbody>
+                       
                         </table>
+                    
+                        
                     </div>
+                        
                 </div>
             )}
+        
+        
+        
         </div>
+        
     );
+  
 }
 
 export default MyTable

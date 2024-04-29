@@ -8,9 +8,11 @@ function App() {
     <div>
         {/* <LoginPage/> */}
         <PanelCard/>
+      
     </div>
-
+  
   );
+
 }
 
 export default App;
