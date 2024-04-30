@@ -25,7 +25,7 @@ function MyTable() {
     const fetchData = async () => {
         const username = 'manager'; // Replace with your username
         const password = 'manager'; // Replace with your password
-        const apiUrl = 'https://77.92.189.102/IITPrecastVertical/api/v1/BaqSvc/IIT_RebarElements_PCopy(PRECAST)'; // Adjust the URL as needed
+        const apilink = 'https://77.92.189.102/iit_vertical_precast/api/v1/BaqSvc/IIT_BatchingPlanner'; // Adjust the URL as needed
 
         try {
             const response = await fetch(apilink, {
